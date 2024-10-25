@@ -58,6 +58,11 @@ interface AccountInfoRepositoryI {
     suspend fun getIdByJwtToken(jwtToken: String): Result<Long>
 
     /**
+     * @return top 10 users in the leaderboard in descending order (or less if there is < 10 players at all)
+     */
+    suspend fun getLeaderBoard(): Result<List<Long>>
+
+    /**
      * logs out of the account
      */
     fun logout()

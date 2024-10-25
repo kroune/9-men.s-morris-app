@@ -114,6 +114,21 @@ class AccountInfoRepositoryImpl : AccountInfoRepositoryI {
         }
     }
 
+    override suspend fun getLeaderBoard(): Result<List<Long>> {
+        var response: String? = null
+        return runCatching {
+            val httpResponse: HttpResponse =
+                network.get("http${SERVER_ADDRESS}${USER_API}/leaderboard") {
+                    method = HttpMethod.Get
+                }
+            response = httpResponse.bodyAsText()
+            Json.decodeFromString<List<Long>>(response)
+        }.onFailure {
+            println("error getting leaderboard, response - $response")
+            it.printStackTrace()
+        }
+    }
+
     override fun logout() {
         updateAccountIdState(null)
         updateJwtTokenState(null)

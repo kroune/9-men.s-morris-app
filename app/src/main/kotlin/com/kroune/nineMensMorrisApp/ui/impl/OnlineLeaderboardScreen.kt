@@ -1,4 +1,4 @@
-package com.kroune.nineMensMorrisApp.ui.impl.leaderboard
+package com.kroune.nineMensMorrisApp.ui.impl
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -28,8 +28,7 @@ import com.kroune.nineMensMorrisApp.BUTTON_WIDTH
 
 @Composable
 fun RenderLeaderboardScreen(
-    players: List<Player>,
-    modifier: Modifier = Modifier,
+    players: List<Player>
 ) {
     Box(
         modifier = Modifier

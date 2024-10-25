@@ -16,6 +16,7 @@ import androidx.navigation.toRoute
 import com.kroune.nineMensMorrisApp.data.remote.AuthResults
 import com.kroune.nineMensMorrisApp.di.factoryProvider
 import com.kroune.nineMensMorrisApp.ui.impl.AppStartAnimationScreen
+import com.kroune.nineMensMorrisApp.ui.impl.RenderLeaderboardScreen
 import com.kroune.nineMensMorrisApp.ui.impl.RenderWelcomeScreen
 import com.kroune.nineMensMorrisApp.ui.impl.auth.RenderSignInScreen
 import com.kroune.nineMensMorrisApp.ui.impl.auth.RenderSignUpScreen
@@ -25,6 +26,7 @@ import com.kroune.nineMensMorrisApp.ui.impl.game.RenderGameWithBotScreen
 import com.kroune.nineMensMorrisApp.ui.impl.game.RenderGameWithFriendScreen
 import com.kroune.nineMensMorrisApp.ui.impl.game.RenderOnlineGameScreen
 import com.kroune.nineMensMorrisApp.ui.impl.game.SearchingForGameScreen
+import com.kroune.nineMensMorrisApp.viewModel.impl.LeaderboardViewModel
 import com.kroune.nineMensMorrisApp.viewModel.impl.WelcomeViewModel
 import com.kroune.nineMensMorrisApp.viewModel.impl.auth.SignInViewModel
 import com.kroune.nineMensMorrisApp.viewModel.impl.auth.SignUpViewModel
@@ -204,6 +206,10 @@ fun NavHost(context: Context) {
                 nextRoute = nextRoute,
                 authResult = vm.authResult.value
             )
+        }
+        composable<Navigation.OnlineLeaderboard> {
+            val vm: LeaderboardViewModel = hiltViewModel()
+            RenderLeaderboardScreen(listOf())
         }
         composable<Navigation.SearchingOnlineGame> {
             val vm: SearchingForGameViewModel = hiltViewModel()
