@@ -42,7 +42,10 @@ class AuthRepositoryImpl @Inject constructor() : AuthRepositoryI {
             if (registerResult.status.isSuccess()) {
                 Json.decodeFromString<String>(registerResult.bodyAsText())
             } else {
-                throw ClientNetworkException(registerResult.status.value, registerResult.bodyAsText())
+                throw ClientNetworkException(
+                    registerResult.status.value,
+                    registerResult.bodyAsText()
+                )
             }
         }.onFailure {
             println("error accessing ${"http${SERVER_ADDRESS}${USER_API}/reg"}")
@@ -51,6 +54,7 @@ class AuthRepositoryImpl @Inject constructor() : AuthRepositoryI {
     }
 
     override suspend fun login(login: String, password: String): Result<String> {
+        var result: String = "not initialized"
         return runCatching {
             val loginResult =
                 network.get("http${SERVER_ADDRESS}${USER_API}/login") {
@@ -60,13 +64,10 @@ class AuthRepositoryImpl @Inject constructor() : AuthRepositoryI {
                         parameters["password"] = password
                     }
                 }
-            if (loginResult.status.isSuccess()) {
-                Json.decodeFromString<String>(loginResult.bodyAsText())
-            } else {
-                throw ClientNetworkException(loginResult.status.value, loginResult.bodyAsText())
-            }
+            result = Json.decodeFromString<String>(loginResult.bodyAsText())
+            result
         }.onFailure {
-            println("error accessing ${"http${SERVER_ADDRESS}${USER_API}/login"}")
+            println("error accessing ${"http${SERVER_ADDRESS}${USER_API}/login"}; result - $result")
             it.printStackTrace()
         }
     }

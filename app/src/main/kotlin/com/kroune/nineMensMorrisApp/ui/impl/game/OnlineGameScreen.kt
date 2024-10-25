@@ -1,5 +1,6 @@
 package com.kroune.nineMensMorrisApp.ui.impl.game
 
+import android.graphics.BitmapFactory
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -23,6 +24,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -32,7 +34,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
@@ -63,46 +67,46 @@ fun RenderOnlineGameScreen(
     onGiveUp: () -> Unit,
     gameEnded: Boolean,
     isGreen: Boolean?,
+    timeLeft: Long,
+    ownAccountName: String?,
+    ownPictureByteArray: ByteArray?,
+    ownAccountRating: Long?,
+    enemyAccountName: String?,
+    enemyPictureByteArray: ByteArray?,
+    enemyAccountRating: Long?,
     navController: NavHostController
 ) {
-    if (displayGiveUpConfirmation.value) {
-        GiveUpConfirm(
-            giveUp = {
-                onGiveUp()
-            },
-            navController = navController
-        )
-    }
-
-    // Переменная для хранения смещения по вертикали
     var offsetY by remember { mutableStateOf(0f) }
-    //Стейт для кнопки перемещения доски
     var isDraggingEnabled by remember { mutableStateOf(false) }
 
     fun toggleDragging() {
         isDraggingEnabled = !isDraggingEnabled
     }
 
-    //Получение плотности пикселей экрана
     val density = LocalDensity.current.density
-
-
-
-
     AppTheme {
         Column(
-            modifier = Modifier.fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally
+            modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally
         ) {
-
-            PlayersUI(pos = pos, dragDesk = isDraggingEnabled, onToggleDragging = { toggleDragging() })
+            PlayersUI(
+                pos = pos,
+                dragDesk = isDraggingEnabled,
+                onToggleDragging = { toggleDragging() },
+                timeLeft = timeLeft,
+                isGreen = isGreen,
+                ownAccountName = ownAccountName,
+                ownPictureByteArray = ownPictureByteArray,
+                ownAccountRating = ownAccountRating,
+                enemyAccountName = enemyAccountName,
+                enemyPictureByteArray = enemyPictureByteArray,
+                enemyAccountRating = enemyAccountRating,
+            )
 
             if (displayGiveUpConfirmation.value) {
                 GiveUpConfirm(
                     giveUp = {
                         onGiveUp()
-                    },
-                    navController = navController
+                    }, navController = navController
                 )
             }
             if (!gameEnded) {
@@ -111,20 +115,15 @@ fun RenderOnlineGameScreen(
                 }
             }
 
-
-
-            // Игровое поле с примененным смещением
-            Box(
-                modifier = Modifier
-                    .offset { IntOffset(0, offsetY.roundToInt()) }
-                    .draggable(
-                        state = rememberDraggableState { delta ->
-                            if (isDraggingEnabled) {
-                                offsetY = (offsetY + delta).coerceIn(-50 * density, 200 * density)
-                            }
-                        },
-                        orientation = Orientation.Vertical
-                    )
+            Box(modifier = Modifier
+                .offset { IntOffset(0, offsetY.roundToInt()) }
+                .draggable(
+                    state = rememberDraggableState { delta ->
+                        if (isDraggingEnabled) {
+                            offsetY = (offsetY + delta).coerceIn(-50 * density, 200 * density)
+                        }
+                    }, orientation = Orientation.Vertical
+                )
             ) {
                 RenderGameBoard(
                     pos = pos,
@@ -133,22 +132,7 @@ fun RenderOnlineGameScreen(
                     onClick = onClick
                 )
             }
-
-
-            RenderUndoRedo(
-                handleUndo = {
-                    handleUndo()
-                },
-                handleRedo = {
-                    handleRedo()
-                }
-            )
-
-            Column {
-                if (isGreen == null) {
-                    Text("Waiting for server info")
-                }
-            }
+            RenderUndoRedo(handleUndo = handleUndo, handleRedo = handleRedo)
         }
     }
 }
@@ -157,8 +141,7 @@ private val displayGiveUpConfirmation = mutableStateOf(false)
 
 @Composable
 private fun GiveUpConfirm(
-    giveUp: () -> Unit,
-    navController: NavHostController
+    giveUp: () -> Unit, navController: NavHostController
 ) {
     Box(
         modifier = Modifier
@@ -183,7 +166,7 @@ private fun GiveUpConfirm(
 }
 
 @Composable
-fun TurnTimerUI() {
+fun TurnTimerUI(timeLeft: Long) {
     Box(
         modifier = Modifier
             .padding(16.dp)
@@ -191,7 +174,7 @@ fun TurnTimerUI() {
             .padding(8.dp)
     ) {
         Text(
-            text = "Time left: 20 s",
+            text = "Time left: $timeLeft s",
             fontSize = 24.sp,
             fontWeight = FontWeight.Bold,
             color = Color.DarkGray
@@ -201,54 +184,64 @@ fun TurnTimerUI() {
 
 @Composable
 fun PlayerCard(
-    playerName: String,
-    avatarRes: Int,
-    chipColor: Color,
-    rating: Int,
-    pos: Position,
-    modifier: Modifier = Modifier
+    playerName: String?,
+    pictureByteArray: ByteArray?,
+    isGreen: Boolean,
+    rating: Long?,
+    pos: Position
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        modifier = modifier
+        modifier = Modifier
             .background(Color.LightGray, shape = RoundedCornerShape(8.dp))
             .padding(8.dp)
     ) {
-        Image(
-            painter = painterResource(id = avatarRes),
-            contentDescription = null,
-            contentScale = ContentScale.Crop,
-            modifier = Modifier
-                .size(40.dp)
-                .background(Color.Gray, shape = CircleShape)
-        )
+        if (pictureByteArray != null) {
+            Image(
+                bitmap = BitmapFactory.decodeByteArray(pictureByteArray, 0, pictureByteArray.size)
+                    .asImageBitmap(),
+                contentDescription = null,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .size(40.dp)
+                    .background(Color.Gray, shape = CircleShape)
+            )
+        } else {
+            Icon(
+                painter = painterResource(R.drawable.baseline_account_circle_48),
+                contentDescription = "own profile loading icon",
+                modifier = Modifier
+                    .size(40.dp)
+                    .clip(CircleShape)
+            )
+        }
         Spacer(modifier = Modifier.width(8.dp))
         Column(
             verticalArrangement = Arrangement.Center
         ) {
-            Text(text = playerName, fontSize = 16.sp)
+            Text(text = playerName ?: "loading info...", fontSize = 16.sp)
             Spacer(modifier = Modifier.height(4.dp))
 
             Box(
                 modifier = Modifier
                     .size(
                         BUTTON_WIDTH * when {
-                            chipColor == Color.Green && pos.pieceToMove -> 1.5f
-                            chipColor == Color.Blue && !pos.pieceToMove -> 1.5f
+                            isGreen && pos.pieceToMove -> 1.5f
+                            !isGreen && !pos.pieceToMove -> 1.5f
                             else -> 1f
                         }
                     )
-                    .background(chipColor, CircleShape)
+                    .background(if (isGreen) Color.Green else Color.Blue, CircleShape)
                     .alpha(if (pos.freeGreenPieces == 0.toUByte()) 0f else 1f),
                 contentAlignment = Alignment.Center
             ) {
                 Text(
-                    color = if (chipColor == Color.Blue) {
+                    color = if (!isGreen) {
                         Color.Green
                     } else {
                         Color.Blue
                     },
-                    text = if (chipColor == Color.Blue) {
+                    text = if (!isGreen) {
                         pos.freeBluePieces.toString()
                     } else {
                         pos.freeGreenPieces.toString()
@@ -257,13 +250,25 @@ fun PlayerCard(
             }
 
             Spacer(modifier = Modifier.height(4.dp))
-            Text(text = "Rating: $rating", fontSize = 14.sp, color = Color.Gray)
+            Text(text = "Rating: ${rating ?: "loading..."}", fontSize = 14.sp, color = Color.Gray)
         }
     }
 }
 
 @Composable
-fun PlayersUI(pos: Position, dragDesk : Boolean, onToggleDragging: () -> Unit) {
+fun PlayersUI(
+    pos: Position,
+    dragDesk: Boolean,
+    onToggleDragging: () -> Unit,
+    timeLeft: Long,
+    isGreen: Boolean?,
+    ownAccountName: String?,
+    ownPictureByteArray: ByteArray?,
+    ownAccountRating: Long?,
+    enemyAccountName: String?,
+    enemyPictureByteArray: ByteArray?,
+    enemyAccountRating: Long?,
+) {
     Column(
         modifier = Modifier
             .padding(16.dp)
@@ -272,33 +277,30 @@ fun PlayersUI(pos: Position, dragDesk : Boolean, onToggleDragging: () -> Unit) {
     ) {
         Row(
             modifier = Modifier
-                .fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween
+                .fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween
         ) {
             PlayerCard(
-                playerName = "Player 1",
-                avatarRes = R.drawable.pv,
-                chipColor = Color.Green,
-                rating = 123,
+                playerName = ownAccountName,
+                pictureByteArray = ownPictureByteArray,
+                isGreen = isGreen == true,
+                rating = ownAccountRating,
                 pos = pos,
-                modifier = Modifier.weight(1f),
             )
 
             Spacer(modifier = Modifier.width(16.dp))
             PlayerCard(
-                playerName = "Player 2",
-                avatarRes = R.drawable.chert_risunok_26,
-                chipColor = Color.Blue,
-                rating = 456,
+                playerName = enemyAccountName,
+                pictureByteArray = enemyPictureByteArray,
+                isGreen = isGreen == false,
+                rating = enemyAccountRating,
                 pos = pos,
-                modifier = Modifier.weight(1f)
             )
         }
         Spacer(modifier = Modifier.height(16.dp))
-        Row() {
-            TurnTimerUI()
+        Row {
+            TurnTimerUI(timeLeft)
             Button(
-                onClick = { onToggleDragging() }, //291
+                onClick = { onToggleDragging() },
                 modifier = Modifier.padding(12.dp)
             ) {
                 Text(if (dragDesk) "Deactivate Move" else "Activate Move")

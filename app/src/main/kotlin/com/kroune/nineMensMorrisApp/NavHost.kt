@@ -247,6 +247,13 @@ fun NavHost(context: Context) {
                 onGiveUp = { vm.giveUp() },
                 gameEnded = vm.gameEnded.value,
                 isGreen = vm.movesFirst.value,
+                timeLeft = vm.timeLeft.value,
+                ownAccountName = vm.ownAccountName.value,
+                ownAccountRating = vm.ownAccountRating.value,
+                ownPictureByteArray = vm.ownPictureByteArray.value,
+                enemyAccountName = vm.enemyAccountName.value,
+                enemyAccountRating = vm.enemyAccountRating.value,
+                enemyPictureByteArray = vm.enemyPictureByteArray.value,
                 navController = navController
             )
         }

@@ -40,52 +40,65 @@ class AccountInfoRepositoryImpl : AccountInfoRepositoryI {
         }
     }
 
-    override suspend fun getAccountRatingById(id: Long): Result<Long?> {
+    override suspend fun getAccountRatingById(id: Long, jwtToken: String): Result<Long?> {
+        var response: Long? = null
         return runCatching {
             val request = network.get("http${SERVER_ADDRESS}${USER_API}/get-rating-by-id") {
                 method = HttpMethod.Get
                 url {
                     parameters["id"] = id.toString()
+                    parameters["jwtToken"] = jwtToken
                 }
             }.bodyAsText()
-            Json.decodeFromString<Long?>(request)
+            response = Json.decodeFromString<Long?>(request)
+            response
         }.onFailure {
-            println("error getting account rating $id")
+            println("error getting account rating $id; response - $response")
             it.printStackTrace()
         }
     }
 
-    override suspend fun getAccountDateById(id: Long): Result<Triple<Int, Int, Int>?> {
+    override suspend fun getAccountDateById(
+        id: Long,
+        jwtToken: String
+    ): Result<Triple<Int, Int, Int>?> {
+        var response: Triple<Int, Int, Int>? = null
         return runCatching {
             val request = network.get("http${SERVER_ADDRESS}${USER_API}/get-creation-date-by-id") {
                 method = HttpMethod.Get
                 url {
                     parameters["id"] = id.toString()
+                    parameters["jwtToken"] = jwtToken
                 }
             }.bodyAsText()
-            Json.decodeFromString<Triple<Int, Int, Int>?>(request)
+            response = Json.decodeFromString<Triple<Int, Int, Int>?>(request)
+            response
         }.onFailure {
-            println("error getting account creation date $id")
+            println("error getting account creation date $id; response - $response")
             it.printStackTrace()
         }
     }
 
-    override suspend fun getAccountNameById(id: Long): Result<String?> {
+    override suspend fun getAccountNameById(id: Long, jwtToken: String): Result<String?> {
+        var response: String? = null
         return runCatching {
             val request = network.get("http${SERVER_ADDRESS}${USER_API}/get-login-by-id") {
                 method = HttpMethod.Get
                 url {
                     parameters["id"] = id.toString()
+                    parameters["jwtToken"] = jwtToken
                 }
             }.bodyAsText()
-            Json.decodeFromString<String?>(request)
+            response = Json.decodeFromString<String?>(request)
+            response
         }.onFailure {
-            println("error getting account name $id")
+            println("error getting account name $id; response - $response")
             it.printStackTrace()
         }
     }
 
     override suspend fun getIdByJwtToken(jwtToken: String): Result<Long> {
+        var response: Long? = null
         return runCatching {
             val request = network.get("http${SERVER_ADDRESS}${USER_API}/get-id-by-jwt-token") {
                 method = HttpMethod.Get
@@ -93,9 +106,10 @@ class AccountInfoRepositoryImpl : AccountInfoRepositoryI {
                     parameters["jwtToken"] = jwtToken
                 }
             }.bodyAsText()
-            Json.decodeFromString<Long>(request)
+            response = Json.decodeFromString<Long>(request)
+            response
         }.onFailure {
-            println("error getting account id $jwtToken")
+            println("error getting account id $jwtToken; response - $response")
             it.printStackTrace()
         }
     }
@@ -106,19 +120,21 @@ class AccountInfoRepositoryImpl : AccountInfoRepositoryI {
         Log.d("ACCOUNT", "Logged out")
     }
 
-    override suspend fun getAccountPictureById(id: Long): Result<ByteArray> {
+    override suspend fun getAccountPictureById(id: Long, jwtToken: String): Result<ByteArray> {
+        var response: String? = null
         return runCatching {
             val httpResponse: HttpResponse =
                 network.get("http${SERVER_ADDRESS}${USER_API}/get-picture-by-id") {
                     method = HttpMethod.Get
                     url {
                         parameters["id"] = id.toString()
+                        parameters["jwtToken"] = jwtToken
                     }
                 }
-            val response = httpResponse.bodyAsText()
+            response = httpResponse.bodyAsText()
             Json.decodeFromString<ByteArray>(response)
         }.onFailure {
-            println("error getting account picture $id")
+            println("error getting account picture id - $id, response - $response")
             it.printStackTrace()
         }
     }

@@ -1,9 +1,14 @@
 package com.kroune.nineMensMorrisApp.viewModel.impl.game
 
+import androidx.compose.runtime.MutableState
+import androidx.lifecycle.viewModelScope
 import com.kroune.nineMensMorrisApp.data.remote.account.AccountInfoRepositoryI
 import com.kroune.nineMensMorrisApp.viewModel.interfaces.ViewModelI
+import com.kroune.nineMensMorrisApp.viewModel.useCases.GetUserInfoUseCase
 import com.kroune.nineMensMorrisApp.viewModel.useCases.OnlineGameUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 /**
@@ -12,58 +17,99 @@ import javax.inject.Inject
  */
 @HiltViewModel
 class OnlineGameViewModel @Inject constructor(
-    private val accountInfoRepository: AccountInfoRepositoryI
+    val accountInfoRepository: AccountInfoRepositoryI
 ) : ViewModelI() {
-    private val useCase = OnlineGameUseCase(accountInfoRepository)
+    private val game = OnlineGameUseCase(accountInfoRepository, viewModelScope)
 
     /**
      * handles clicking
      */
     fun onClick(index: Int) {
-        useCase.gameBoard.onClick(index)
+        game.gameBoard.onClick(index)
     }
 
     /**
      * performs give up actions
      */
     fun giveUp() {
-        useCase.giveUp()
+        game.giveUp()
     }
 
     /**
      * if the player move first
      */
-    val movesFirst = useCase.isGreen
+    val movesFirst = game.isGreen
+
+    val timeLeft = game.timeLeft
 
     /**
      * move hints
      */
-    val moveHints = useCase.gameBoard.moveHints
+    val moveHints = game.gameBoard.moveHints
 
     /**
      * selected button
      */
-    val selectedButton = useCase.gameBoard.selectedButton
+    val selectedButton = game.gameBoard.selectedButton
 
     /**
      * current position
      */
-    val pos = useCase.gameBoard.pos
+    val pos = game.gameBoard.pos
 
     /**
      * history of played moves
      */
-    val movesHistory = useCase.gameBoard.movesHistory
+    val movesHistory = game.gameBoard.movesHistory
 
     /**
      * game id
      */
     var gameId: Long? = null
 
+
+    val ownAccountId = accountInfoRepository.accountIdState
+    val enemyAccountId = game.enemyId
+    val ownInfo = GetUserInfoUseCase(viewModelScope, accountInfoRepository)
+    val enemyInfo = GetUserInfoUseCase(viewModelScope, accountInfoRepository)
+
+    val ownAccountName: MutableState<String?> = ownInfo.accountName
+    val ownPictureByteArray: MutableState<ByteArray?> = ownInfo.pictureByteArray
+    val ownAccountRating: MutableState<Long?> = ownInfo.accountRating
+    val enemyAccountName: MutableState<String?> = enemyInfo.accountName
+    val enemyPictureByteArray: MutableState<ByteArray?> = enemyInfo.pictureByteArray
+    val enemyAccountRating: MutableState<Long?> = enemyInfo.accountRating
+
+    init {
+        viewModelScope.launch {
+            ownAccountId.collectLatest {
+                println("own account id - $it")
+                if (it != null) {
+                    ownInfo.getInfo(it)
+                } else {
+                    // it will be remove in the next refactor related to jwt tokens
+                    accountInfoRepository.updateAccountIdState(
+                        accountInfoRepository.getIdByJwtToken(
+                            accountInfoRepository.jwtTokenState.value!!
+                        ).getOrThrow()
+                    )
+                }
+            }
+        }
+        viewModelScope.launch {
+            enemyAccountId.collectLatest {
+                println("enemy account id - $it")
+                if (it != null) {
+                    enemyInfo.getInfo(it)
+                }
+            }
+        }
+    }
+
     /**
      * returns if game has ended
      */
-    val gameEnded = useCase.gameEnded
+    val gameEnded = game.gameEnded
 
     /**
      * passes game it to the vm
@@ -80,6 +126,6 @@ class OnlineGameViewModel @Inject constructor(
      * and we have to use our own vm factory
      */
     fun init() {
-        useCase.createGameConnection(gameId!!)
+        game.createGameConnection(gameId!!)
     }
 }
