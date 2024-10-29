@@ -18,6 +18,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -28,7 +29,7 @@ import com.kroune.nineMensMorrisApp.BUTTON_WIDTH
 
 @Composable
 fun RenderLeaderboardScreen(
-    players: List<Player>
+    players: SnapshotStateList<Player>?
 ) {
     Box(
         modifier = Modifier
@@ -42,7 +43,7 @@ fun RenderLeaderboardScreen(
 
 @Composable
 fun OnlineLeaderboard(
-    players: List<Player>,
+    players: SnapshotStateList<Player>?,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -56,8 +57,10 @@ fun OnlineLeaderboard(
             modifier = Modifier.padding(bottom = 16.dp),
             color = Color.White
         )
-        players.forEach { player ->
-            LeaderboardItem(player = player)
+        if (players != null) {
+            players.forEach { player ->
+                LeaderboardItem(player = player)
+            }
         }
     }
 }
