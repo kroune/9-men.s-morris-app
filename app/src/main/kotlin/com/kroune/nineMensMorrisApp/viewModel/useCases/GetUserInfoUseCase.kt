@@ -15,27 +15,27 @@ class GetUserInfoUseCase(
     val pictureByteArray: MutableState<ByteArray?> = mutableStateOf(null)
     val accountRating: MutableState<Long?> = mutableStateOf(null)
 
-    fun getInfo(id: Long) {
+    fun getInfo(id: Long, isInLeaderBoard: Boolean = false) {
         scope.launch {
             scope.launch {
                 accountName.value =
                     accountInfoRepository.getAccountNameById(
                         id,
-                        accountInfoRepository.jwtTokenState.value!!
+                        if (!isInLeaderBoard) accountInfoRepository.jwtTokenState.value!! else null
                     ).getOrThrow()
             }
             scope.launch {
                 pictureByteArray.value =
                     accountInfoRepository.getAccountPictureById(
                         id,
-                        accountInfoRepository.jwtTokenState.value!!
+                        if (!isInLeaderBoard) accountInfoRepository.jwtTokenState.value!! else null
                     ).getOrThrow()
             }
             scope.launch {
                 accountRating.value =
                     accountInfoRepository.getAccountRatingById(
                         id,
-                        accountInfoRepository.jwtTokenState.value!!
+                        if (!isInLeaderBoard) accountInfoRepository.jwtTokenState.value!! else null
                     ).getOrThrow()
             }
         }

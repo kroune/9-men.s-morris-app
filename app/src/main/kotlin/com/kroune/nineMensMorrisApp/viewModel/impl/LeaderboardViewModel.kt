@@ -39,7 +39,7 @@ class LeaderboardViewModel @Inject constructor(
             leaderboardData.forEach { id ->
                 launch {
                     val userInfo = GetUserInfoUseCase(this, accountInfoRepository)
-                    userInfo.getInfo(id)
+                    userInfo.getInfo(id, true)
                 }
             }
         }
