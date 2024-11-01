@@ -31,15 +31,25 @@ class LeaderboardViewModel @Inject constructor(
     init {
         CoroutineScope(Dispatchers.IO).launch {
             val leaderboardData =
-                accountInfoRepository.getLeaderBoard().getOrNull()
+                accountInfoRepository.getLeaderBoard().getOrNull() //тут просятся лонги с серва
             if (leaderboardData == null) {
-                players == null
+                players?.clear()
                 return@launch
             }
             leaderboardData.forEach { id ->
                 launch {
                     val userInfo = GetUserInfoUseCase(this, accountInfoRepository)
                     userInfo.getInfo(id, true)
+                    val playerInfo = userInfo.getInfo(id, true)
+
+                    // Создаём объект Player и добавляем его в список
+                    val player = Player(
+                        avatarResId = playerInfo.avatarResId,
+                        name = playerInfo.name,
+                        rating = playerInfo.rating,
+                        score = playerInfo.score
+                    )
+                    players?.add(player)
                 }
             }
         }
