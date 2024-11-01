@@ -21,37 +21,28 @@ class LeaderboardViewModel @Inject constructor(
     private val accountInfoRepository: AccountInfoRepositoryI
 ) : ViewModelI() {
 
-    /**
-     * null = error
-     * empty = loading
-     * non empty = loaded
-     */
-    val players: SnapshotStateList<Player>? = mutableStateListOf()
+    val players: SnapshotStateList<Player> = mutableStateListOf()
 
     init {
         CoroutineScope(Dispatchers.IO).launch {
-            val leaderboardData =
-                accountInfoRepository.getLeaderBoard().getOrNull() //тут просятся лонги с серва
+            val leaderboardData = accountInfoRepository.getLeaderBoard().getOrNull()
             if (leaderboardData == null) {
-                players?.clear()
+                players.clear()
                 return@launch
             }
             leaderboardData.forEach { id ->
                 launch {
-                    val userInfo = GetUserInfoUseCase(this, accountInfoRepository)
-                    userInfo.getInfo(id, true)
-                    val playerInfo = userInfo.getInfo(id, true)
-
-                    // Создаём объект Player и добавляем его в список
+                    val userInfoUseCase = GetUserInfoUseCase(this, accountInfoRepository)
+                    userInfoUseCase.getInfo(id, true)
                     val player = Player(
-                        avatarResId = playerInfo.avatarResId,
-                        name = playerInfo.name,
-                        rating = playerInfo.rating,
-                        score = playerInfo.score
+                        accountName = userInfoUseCase.accountName.value ?: "Unknown",
+                        pictureByteArray = userInfoUseCase.pictureByteArray.value ?: ByteArray(0),
+                        accountRating = userInfoUseCase.accountRating.value ?: 0L
                     )
-                    players?.add(player)
+                    players.add(player)
                 }
             }
         }
     }
 }
+
