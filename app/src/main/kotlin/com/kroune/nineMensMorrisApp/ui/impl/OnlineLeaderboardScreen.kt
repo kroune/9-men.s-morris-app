@@ -8,10 +8,12 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Card
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.State
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -21,6 +23,7 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.kroune.nineMensMorrisApp.BUTTON_WIDTH
+import com.kroune.nineMensMorrisApp.R
 
 @Composable
 fun RenderLeaderboardScreen(
@@ -71,16 +74,27 @@ fun LeaderboardItem(player: Player) {
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.padding(16.dp)
         ) {
-            val imageBitmap = BitmapFactory.decodeByteArray(player.pictureByteArray, 0, player.pictureByteArray.size).asImageBitmap()
 
+
+            if (player.pictureByteArray != null) {
             Image(
-                bitmap = imageBitmap,
+                bitmap = BitmapFactory.decodeByteArray(player.pictureByteArray, 0, player.pictureByteArray.size).asImageBitmap(),
                 contentDescription = "Player Avatar",
                 modifier = Modifier
                     .size(50.dp)
                     .clip(CircleShape)
                     .border(2.dp, Color.White, CircleShape)
-            )
+            )}
+            else {
+                Icon(
+                    painter = painterResource(R.drawable.baseline_account_circle_48),
+                    contentDescription = "own profile loading icon",
+                    modifier = Modifier
+                        .size(40.dp)
+                        .clip(CircleShape)
+                )
+            }
+
             Spacer(modifier = Modifier.width(16.dp))
             Column {
                 Text(
@@ -98,9 +112,9 @@ fun LeaderboardItem(player: Player) {
     }
 }
 
-// Data class for player information
+// Data class for player information (тут везде оставляем State)
 data class Player(
-    val accountName: String,
-    val pictureByteArray: ByteArray,
-    val accountRating: Long
+    val accountName: State<String>,
+    val pictureByteArray: State<ByteArray>,
+    val accountRating: State<Long>
 )
