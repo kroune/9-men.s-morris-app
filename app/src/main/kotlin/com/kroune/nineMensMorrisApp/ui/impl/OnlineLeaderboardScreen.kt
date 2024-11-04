@@ -74,11 +74,12 @@ fun LeaderboardItem(player: Player) {
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.padding(16.dp)
         ) {
+            val imageBitmap = BitmapFactory.decodeByteArray(player.pictureByteArray.value, 0, player.pictureByteArray.value.size).asImageBitmap()
 
 
             if (player.pictureByteArray != null) {
             Image(
-                bitmap = BitmapFactory.decodeByteArray(player.pictureByteArray, 0, player.pictureByteArray.size).asImageBitmap(),
+                bitmap = imageBitmap,
                 contentDescription = "Player Avatar",
                 modifier = Modifier
                     .size(50.dp)
@@ -98,7 +99,7 @@ fun LeaderboardItem(player: Player) {
             Spacer(modifier = Modifier.width(16.dp))
             Column {
                 Text(
-                    text = player.accountName,
+                    text = player.accountName.toString(),
                     style = MaterialTheme.typography.displayMedium,
                     color = Color.White
                 )
