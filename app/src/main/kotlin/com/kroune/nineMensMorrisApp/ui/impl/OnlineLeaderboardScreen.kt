@@ -74,7 +74,9 @@ fun LeaderboardItem(player: Player) {
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.padding(16.dp)
         ) {
-            val imageBitmap = BitmapFactory.decodeByteArray(player.pictureByteArray.value, 0, player.pictureByteArray.value.size).asImageBitmap()
+            val imageBitmap = BitmapFactory.decodeByteArray(player.pictureByteArray.value, 0,
+                player.pictureByteArray.value?.size ?: 0
+            ).asImageBitmap()
 
 
             if (player.pictureByteArray != null) {
@@ -99,12 +101,12 @@ fun LeaderboardItem(player: Player) {
             Spacer(modifier = Modifier.width(16.dp))
             Column {
                 Text(
-                    text = player.accountName.toString(),
+                    text = player.accountName.value.toString(),
                     style = MaterialTheme.typography.displayMedium,
                     color = Color.White
                 )
                 Text(
-                    text = "Rating: ${player.accountRating}",
+                    text = "Rating: ${player.accountRating.value}",
                     style = MaterialTheme.typography.bodySmall,
                     color = Color.LightGray
                 )
@@ -115,7 +117,7 @@ fun LeaderboardItem(player: Player) {
 
 // Data class for player information (тут везде оставляем State)
 data class Player(
-    val accountName: State<String>,
-    val pictureByteArray: State<ByteArray>,
-    val accountRating: State<Long>
+    val accountName: State<String?>,
+    val pictureByteArray: State<ByteArray?>,
+    val accountRating: State<Long?>
 )

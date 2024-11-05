@@ -36,10 +36,10 @@ class LeaderboardViewModel @Inject constructor(
                         val userInfoUseCase = GetUserInfoUseCase(this, accountInfoRepository)
                         userInfoUseCase.getInfo(id, true)
                         val player = Player(
-                            accountName = userInfoUseCase.accountName.value ?: "Unknown",
-                            pictureByteArray = userInfoUseCase.pictureByteArray.value
-                                ?: ByteArray(0),
-                            accountRating = userInfoUseCase.accountRating.value// ?: 0L
+                            accountName = userInfoUseCase.accountName /* ?: "Unknown"*/,
+                            pictureByteArray = userInfoUseCase.pictureByteArray
+                                /*?: ByteArray(0)*/,
+                            accountRating = userInfoUseCase.accountRating// ?: 0L
                         )
                         players.add(player)
                     }
