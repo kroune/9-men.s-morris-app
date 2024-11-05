@@ -74,21 +74,21 @@ fun LeaderboardItem(player: Player) {
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.padding(16.dp)
         ) {
+
             val imageBitmap = BitmapFactory.decodeByteArray(player.pictureByteArray.value, 0,
-                player.pictureByteArray.value?.size ?: 0
+                player.pictureByteArray.value?.size ?: 5123
             ).asImageBitmap()
 
 
-            if (player.pictureByteArray != null) {
-            Image(
-                bitmap = imageBitmap,
-                contentDescription = "Player Avatar",
-                modifier = Modifier
-                    .size(50.dp)
-                    .clip(CircleShape)
-                    .border(2.dp, Color.White, CircleShape)
-            )}
-            else {
+            if (player.pictureByteArray.value != null) {
+                Image(
+                    bitmap = imageBitmap,
+                    contentDescription = "Player Avatar",
+                    modifier = Modifier
+                        .size(50.dp)
+                        .clip(CircleShape)
+                        .border(2.dp, Color.White, CircleShape)
+                )} else {
                 Icon(
                     painter = painterResource(R.drawable.baseline_account_circle_48),
                     contentDescription = "own profile loading icon",
