@@ -24,6 +24,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.kroune.nineMensMorrisApp.BUTTON_WIDTH
 import com.kroune.nineMensMorrisApp.R
+import com.kroune.nineMensMorrisApp.common.LoadingCircle
 
 @Composable
 fun RenderLeaderboardScreen(
@@ -75,12 +76,12 @@ fun LeaderboardItem(player: Player) {
             modifier = Modifier.padding(16.dp)
         ) {
 
-            val imageBitmap = BitmapFactory.decodeByteArray(player.pictureByteArray.value, 0,
-                player.pictureByteArray.value?.size ?: 5123
-            ).asImageBitmap()
-
-
             if (player.pictureByteArray.value != null) {
+
+                val imageBitmap = BitmapFactory.decodeByteArray(player.pictureByteArray.value, 0,
+                    player.pictureByteArray.value?.size!!
+                ).asImageBitmap()
+
                 Image(
                     bitmap = imageBitmap,
                     contentDescription = "Player Avatar",
@@ -89,13 +90,7 @@ fun LeaderboardItem(player: Player) {
                         .clip(CircleShape)
                         .border(2.dp, Color.White, CircleShape)
                 )} else {
-                Icon(
-                    painter = painterResource(R.drawable.baseline_account_circle_48),
-                    contentDescription = "own profile loading icon",
-                    modifier = Modifier
-                        .size(40.dp)
-                        .clip(CircleShape)
-                )
+                LoadingCircle()
             }
 
             Spacer(modifier = Modifier.width(16.dp))
