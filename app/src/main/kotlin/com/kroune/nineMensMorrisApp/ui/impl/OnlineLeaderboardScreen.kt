@@ -6,8 +6,12 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CardElevation
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -21,6 +25,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.kroune.nineMensMorrisApp.BUTTON_WIDTH
 import com.kroune.nineMensMorrisApp.R
@@ -48,17 +53,21 @@ fun OnlineLeaderboard(
     Column(
         modifier = modifier
             .fillMaxWidth()
+            .background(Color(0xFF303030))
             .padding(16.dp)
     ) {
         Text(
             text = "Leaderboard",
-            style = MaterialTheme.typography.headlineSmall,
+            style = MaterialTheme.typography.headlineSmall.copy(color = Color.White),
             modifier = Modifier.padding(bottom = 16.dp),
-            color = Color.White
+//            color = Color.White
         )
+        LazyColumn {
+//            items(players ?: listOf()) { player ->
+//                LeaderboardItem(player = player)
         players?.forEach { player ->
             LeaderboardItem(player = player)
-        }
+        }}
     }
 }
 
@@ -68,8 +77,9 @@ fun LeaderboardItem(player: Player) {
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 8.dp)
-            .background(Color.Gray)
-            .border(2.dp, Color.DarkGray)
+            .background(Color(0xFF424242), RoundedCornerShape(8.dp))
+            .border(2.dp, Color(0xFF616161), RoundedCornerShape(8.dp)),
+           elevation = CardDefaults.cardElevation(4.dp)
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -97,7 +107,7 @@ fun LeaderboardItem(player: Player) {
             Column {
                 Text(
                     text = player.accountName.value.toString(),
-                    style = MaterialTheme.typography.displayMedium,
+                    style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold),
                     color = Color.White
                 )
                 Text(

@@ -13,6 +13,7 @@ uiTestManifest = "1.6.8"
 uiTooling = "1.7.0-beta06"
 xMenSMorrisShared = "7c7979d18d"
 xMenSMorrisLib = "v1.0.0"
+foundationAndroid = "1.7.0-beta02"
 
 [libraries]
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "activityCompose" }
@@ -35,5 +36,6 @@ ktor-client-ohhttp = { group = "io.ktor", name = "ktor-client-okhttp", version.r
 ktor-client-auth = { group = "io.ktor", name = "ktor-client-auth", version.ref = "ktor" }
 x-men-s-morris-lib = { module = "com.github.kroune:9-men-s-morris-lib", version.ref = "xMenSMorrisLib" }
 x-men-s-morris-shared = { module = "com.github.kroune:9-men-s-morris-shared", version.ref = "xMenSMorrisShared" }
+androidx-foundation-android = { group = "androidx.compose.foundation", name = "foundation-android", version.ref = "foundationAndroid" }
 
 [plugins]
