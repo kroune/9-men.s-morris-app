@@ -35,14 +35,9 @@ import com.kroune.nineMensMorrisApp.common.LoadingCircle
 fun RenderLeaderboardScreen(
     players: SnapshotStateList<Player>?
 ) {
-    Box(
-        modifier = Modifier
-            .padding(0.dp, BUTTON_WIDTH * 9.5f, 0.dp, 0.dp)
-            .height(IntrinsicSize.Max)
-            .fillMaxWidth()
-    ) {
-        OnlineLeaderboard(players = players)
-    }
+
+    OnlineLeaderboard(players = players)
+
 }
 
 @Composable
@@ -53,6 +48,7 @@ fun OnlineLeaderboard(
     Column(
         modifier = modifier
             .fillMaxWidth()
+//            .fillMaxHeight()
             .background(Color(0xFF303030))
             .padding(16.dp)
     ) {
@@ -62,12 +58,11 @@ fun OnlineLeaderboard(
             modifier = Modifier.padding(bottom = 16.dp),
 //            color = Color.White
         )
-        LazyColumn {
-//            items(players ?: listOf()) { player ->
-//                LeaderboardItem(player = player)
-        players?.forEach { player ->
-            LeaderboardItem(player = player)
-        }}
+        LazyColumn (/*modifier = modifier.fillMaxHeight()*/) {
+            items(players ?: listOf()) { player ->
+                LeaderboardItem(player = player)
+            }
+        }
     }
 }
 
