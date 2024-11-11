@@ -24,6 +24,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -49,7 +50,7 @@ fun OnlineLeaderboard(
         modifier = modifier
             .fillMaxWidth()
 //            .fillMaxHeight()
-            .background(Color(0xFF303030))
+            .background(Color.Gray)
             .padding(16.dp)
     ) {
         Text(
@@ -70,15 +71,16 @@ fun OnlineLeaderboard(
 fun LeaderboardItem(player: Player) {
     Card(
         modifier = Modifier
-            .fillMaxWidth()
+            .fillMaxSize()
             .padding(vertical = 8.dp)
-            .background(Color(0xFF424242), RoundedCornerShape(8.dp))
+//            .background(Color.Gray, RoundedCornerShape(8.dp))
             .border(2.dp, Color(0xFF616161), RoundedCornerShape(8.dp)),
-           elevation = CardDefaults.cardElevation(4.dp)
+           elevation = CardDefaults.cardElevation(4.dp),
+        colors = CardDefaults.cardColors(containerColor = Color.LightGray)
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.padding(16.dp)
+            modifier = Modifier.padding(16.dp)/*.background(Color.LightGray)*/
         ) {
 
             if (player.pictureByteArray.value != null) {
@@ -89,26 +91,28 @@ fun LeaderboardItem(player: Player) {
 
                 Image(
                     bitmap = imageBitmap,
+                    contentScale = ContentScale.Crop,
                     contentDescription = "Player Avatar",
                     modifier = Modifier
                         .size(50.dp)
-                        .clip(CircleShape)
-                        .border(2.dp, Color.White, CircleShape)
+                        .clip(RoundedCornerShape(1.dp))
+//                        .border(2.dp, Color.White, CircleShape)
                 )} else {
                 LoadingCircle()
             }
 
             Spacer(modifier = Modifier.width(16.dp))
-            Column {
+            Column(verticalArrangement = Arrangement.Center) {
                 Text(
                     text = player.accountName.value.toString(),
                     style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold),
-                    color = Color.White
+                    color = Color.Black
                 )
+                Spacer(modifier = Modifier.height(4.dp))
                 Text(
                     text = "Rating: ${player.accountRating.value}",
                     style = MaterialTheme.typography.bodySmall,
-                    color = Color.LightGray
+                    color = Color.Gray
                 )
             }
         }

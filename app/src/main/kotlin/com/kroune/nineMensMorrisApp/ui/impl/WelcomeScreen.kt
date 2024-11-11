@@ -201,7 +201,21 @@ private fun RenderMainScreen(
             Button(
                 modifier = Modifier.align(Alignment.CenterHorizontally),
                 onClick = {
-                    navController?.navigateSingleTopTo(Navigation.OnlineLeaderboard)
+                    CoroutineScope(Dispatchers.IO).launch {
+                        if (checkJwtToken().getOrNull() == true) {
+                            withContext(Dispatchers.Main) {
+                                navController?.navigateSingleTopTo(Navigation.OnlineLeaderboard)
+                            }
+                        } else {
+                            withContext(Dispatchers.Main) {
+                                navController?.navigateSingleTopTo(
+                                    Navigation.SignIn(
+                                        Navigation.OnlineLeaderboard
+                                    )
+                                )
+                            }
+                        }
+                    }
                 },
                 shape = RoundedCornerShape(5.dp),
                 colors = ButtonColors(Color.Black, Color.Black, Color.Gray, Color.Gray)

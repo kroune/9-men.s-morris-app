@@ -34,7 +34,7 @@ class LeaderboardViewModel @Inject constructor(
                 leaderboardData.forEach { id ->
                     launch {
                         val userInfoUseCase = GetUserInfoUseCase(this, accountInfoRepository)
-                        userInfoUseCase.getInfo(id, true)
+                        userInfoUseCase.getInfo(id, false)
                         val player = Player(
                             accountName = userInfoUseCase.accountName /* ?: "Unknown"*/,
                             pictureByteArray = userInfoUseCase.pictureByteArray
