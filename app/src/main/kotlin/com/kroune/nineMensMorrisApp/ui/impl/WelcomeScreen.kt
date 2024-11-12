@@ -221,7 +221,7 @@ private fun RenderMainScreen(
                 colors = ButtonColors(Color.Black, Color.Black, Color.Gray, Color.Gray)
             ) {
                 Text(
-                    text = "Online leaderboard",
+                    text = resources.getString(R.string.leaderboard),
                     color = Color.White
                 )
             }

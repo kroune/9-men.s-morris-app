@@ -1,5 +1,6 @@
 package com.kroune.nineMensMorrisApp.ui.impl.game
 
+import android.content.res.Resources
 import android.graphics.BitmapFactory
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
@@ -74,7 +75,8 @@ fun RenderOnlineGameScreen(
     enemyAccountName: String?,
     enemyPictureByteArray: ByteArray?,
     enemyAccountRating: Long?,
-    navController: NavHostController
+    navController: NavHostController,
+    resources: Resources
 ) {
     var offsetY by remember { mutableStateOf(0f) }
     var isDraggingEnabled by remember { mutableStateOf(false) }
@@ -100,6 +102,7 @@ fun RenderOnlineGameScreen(
                 enemyAccountName = enemyAccountName,
                 enemyPictureByteArray = enemyPictureByteArray,
                 enemyAccountRating = enemyAccountRating,
+                resources = resources
             )
 
             if (displayGiveUpConfirmation.value) {
@@ -166,15 +169,16 @@ private fun GiveUpConfirm(
 }
 
 @Composable
-fun TurnTimerUI(timeLeft: Long) {
+fun TurnTimerUI(timeLeft: Long, resources: Resources) {
     Box(
         modifier = Modifier
+//            .fillMaxWidth(0.5f)
             .padding(16.dp)
             .border(2.dp, Color.Gray, shape = RoundedCornerShape(8.dp))
             .padding(8.dp)
     ) {
         Text(
-            text = "Time left: $timeLeft s",
+            text = timeLeft.toString(),
             fontSize = 24.sp,
             fontWeight = FontWeight.Bold,
             color = Color.DarkGray
@@ -188,7 +192,8 @@ fun PlayerCard(
     pictureByteArray: ByteArray?,
     isGreen: Boolean,
     rating: Long?,
-    pos: Position
+    pos: Position,
+    resources: Resources
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -250,7 +255,7 @@ fun PlayerCard(
             }
 
             Spacer(modifier = Modifier.height(4.dp))
-            Text(text = "Rating: ${rating ?: "loading..."}", fontSize = 14.sp, color = Color.Gray)
+            Text(text = "${resources.getString(R.string.rating)}: ${rating ?: "loading..."}", fontSize = 14.sp, color = Color.Gray)
         }
     }
 }
@@ -268,6 +273,7 @@ fun PlayersUI(
     enemyAccountName: String?,
     enemyPictureByteArray: ByteArray?,
     enemyAccountRating: Long?,
+    resources: Resources
 ) {
     Column(
         modifier = Modifier
@@ -285,6 +291,7 @@ fun PlayersUI(
                 isGreen = isGreen == true,
                 rating = ownAccountRating,
                 pos = pos,
+                resources = resources
             )
 
             Spacer(modifier = Modifier.width(16.dp))
@@ -294,11 +301,12 @@ fun PlayersUI(
                 isGreen = isGreen == false,
                 rating = enemyAccountRating,
                 pos = pos,
+                resources = resources
             )
         }
         Spacer(modifier = Modifier.height(16.dp))
         Row {
-            TurnTimerUI(timeLeft)
+            TurnTimerUI(timeLeft, resources)
             Button(
                 onClick = { onToggleDragging() },
                 modifier = Modifier.padding(12.dp)

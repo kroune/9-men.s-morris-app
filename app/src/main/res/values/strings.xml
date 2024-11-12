@@ -37,4 +37,7 @@
     <string name="auth_no_account_found">No account with such login + password found</string>
     <string name="auth_server_error">Server error, something bad must have happened. Report this issue on github</string>
     <string name="game_expected_waiting_time">expected waiting time:</string>
+    <string name="leaderboard">Leaderboard</string>
+    <string name ="rating">Rating"</string>
+    <string name ="time_left">s.</string>
 </resources>

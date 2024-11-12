@@ -36,4 +36,7 @@
     <string name="auth_no_account_found">Аккаунт с таким логином + паролем не был найден</string>
     <string name="auth_server_error">Ошибка сервера, должно быть, произошло что-то очень плохое. Сообщите об этой ошибке на github</string>
     <string name="game_expected_waiting_time">предположительное время ожидания:</string>
+    <string name="leaderboard">таблица лидеров</string>
+    <string name="rating">Рейтинг</string>
+    <string name="time_left">с.</string>
 </resources>

@@ -209,7 +209,7 @@ fun NavHost(context: Context) {
         }
         composable<Navigation.OnlineLeaderboard> {
             val vm: LeaderboardViewModel = hiltViewModel()
-            RenderLeaderboardScreen(vm.players)
+            RenderLeaderboardScreen(vm.players, resources = context.resources,)
         }
         composable<Navigation.SearchingOnlineGame> {
             val vm: SearchingForGameViewModel = hiltViewModel()
@@ -260,7 +260,8 @@ fun NavHost(context: Context) {
                 enemyAccountName = vm.enemyAccountName.value,
                 enemyAccountRating = vm.enemyAccountRating.value,
                 enemyPictureByteArray = vm.enemyPictureByteArray.value,
-                navController = navController
+                navController = navController,
+                resources = context.resources
             )
         }
         composable<Navigation.AppStartAnimation> {
