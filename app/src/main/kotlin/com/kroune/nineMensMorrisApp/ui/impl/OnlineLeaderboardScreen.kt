@@ -93,7 +93,6 @@ fun LeaderboardItem(player: Player, resources: Resources) {
                     modifier = Modifier
                         .size(50.dp)
                         .clip(RoundedCornerShape(1.dp))
-//                        .border(2.dp, Color.White, CircleShape)
                 )} else {
                 LoadingCircle()
             }

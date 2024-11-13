@@ -39,4 +39,10 @@
     <string name="leaderboard">таблица лидеров</string>
     <string name="rating">Рейтинг</string>
     <string name="time_left">с.</string>
+    <string name="deactivate_move">Закрепить доску</string>
+    <string name="activate_move">Двигать доску</string>
+    <string name="give_up">Уверены что хотите сдаться?</string>
+    <string name="loading">загрузка...</string>
+    <string name="yes">Да</string>
+    <string name="no">Нет</string>
 </resources>

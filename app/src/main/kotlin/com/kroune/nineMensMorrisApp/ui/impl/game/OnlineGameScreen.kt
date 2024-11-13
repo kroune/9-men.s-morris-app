@@ -109,7 +109,7 @@ fun RenderOnlineGameScreen(
                 GiveUpConfirm(
                     giveUp = {
                         onGiveUp()
-                    }, navController = navController
+                    }, navController = navController, resources = resources
                 )
             }
             if (!gameEnded) {
@@ -144,7 +144,7 @@ private val displayGiveUpConfirmation = mutableStateOf(false)
 
 @Composable
 private fun GiveUpConfirm(
-    giveUp: () -> Unit, navController: NavHostController
+    giveUp: () -> Unit, navController: NavHostController, resources: Resources
 ) {
     Box(
         modifier = Modifier
@@ -152,17 +152,17 @@ private fun GiveUpConfirm(
             .fillMaxHeight(), contentAlignment = Alignment.Center
     ) {
         Column {
-            Text("Are you sure you want to give up?")
+            Text(resources.getString(R.string.give_up))
             Button(onClick = {
                 giveUp()
                 navController.navigateSingleTopTo(Navigation.Welcome)
             }) {
-                Text("Yes")
+                Text(resources.getString(R.string.yes))
             }
             Button(onClick = {
                 displayGiveUpConfirmation.value = false
             }) {
-                Text("No")
+                Text(resources.getString(R.string.no))
             }
         }
     }
@@ -193,11 +193,12 @@ fun PlayerCard(
     isGreen: Boolean,
     rating: Long?,
     pos: Position,
-    resources: Resources
+    resources: Resources,
+    modifier: Modifier = Modifier
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier
+        modifier = modifier
             .background(Color.LightGray, shape = RoundedCornerShape(8.dp))
             .padding(8.dp)
     ) {
@@ -255,7 +256,9 @@ fun PlayerCard(
             }
 
             Spacer(modifier = Modifier.height(4.dp))
-            Text(text = "${resources.getString(R.string.rating)}: ${rating ?: "loading..."}", fontSize = 14.sp, color = Color.Gray)
+            Text(text = "${resources.getString(R.string.rating)}: " +
+                        "${rating ?: resources.getString(R.string.loading)}",
+                fontSize = 14.sp, color = Color.Gray)
         }
     }
 }
@@ -291,7 +294,8 @@ fun PlayersUI(
                 isGreen = isGreen == true,
                 rating = ownAccountRating,
                 pos = pos,
-                resources = resources
+                resources = resources,
+                modifier = Modifier.weight(1f).height(120.dp)
             )
 
             Spacer(modifier = Modifier.width(16.dp))
@@ -301,7 +305,8 @@ fun PlayersUI(
                 isGreen = isGreen == false,
                 rating = enemyAccountRating,
                 pos = pos,
-                resources = resources
+                resources = resources,
+                modifier = Modifier.weight(1f).height(120.dp)
             )
         }
         Spacer(modifier = Modifier.height(16.dp))
@@ -311,7 +316,7 @@ fun PlayersUI(
                 onClick = { onToggleDragging() },
                 modifier = Modifier.padding(12.dp)
             ) {
-                Text(if (dragDesk) "Deactivate Move" else "Activate Move")
+                Text(if (dragDesk) resources.getString(R.string.deactivate_move) else resources.getString(R.string.activate_move))
             }
         }
 

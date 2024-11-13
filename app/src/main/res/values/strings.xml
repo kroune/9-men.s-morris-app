@@ -40,4 +40,10 @@
     <string name="leaderboard">Leaderboard</string>
     <string name ="rating">Rating"</string>
     <string name ="time_left">s.</string>
+    <string name ="deactivate_move">Deactivate Move</string>
+    <string name ="activate_move">Activate Move</string>
+    <string name ="give_up">Are you sure you want to give up</string>
+    <string name ="loading">loading...</string>
+    <string name ="yes">Yes</string>
+    <string name ="no">No</string>
 </resources>
