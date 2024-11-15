@@ -209,7 +209,7 @@ fun NavHost(context: Context) {
         }
         composable<Navigation.OnlineLeaderboard> {
             val vm: LeaderboardViewModel = hiltViewModel()
-            RenderLeaderboardScreen(vm.players, resources = context.resources,)
+            RenderLeaderboardScreen(vm.players, resources = context.resources)
         }
         composable<Navigation.SearchingOnlineGame> {
             val vm: SearchingForGameViewModel = hiltViewModel()
@@ -222,7 +222,7 @@ fun NavHost(context: Context) {
                     }
                 }
             }
-            SearchingForGameScreen(expectedWaitingTime, context.resources)
+            SearchingForGameScreen(expectedWaitingTime,resources = context.resources)
         }
         composable<Navigation.OnlineGame> {
             val vm: OnlineGameViewModel = hiltViewModel()
