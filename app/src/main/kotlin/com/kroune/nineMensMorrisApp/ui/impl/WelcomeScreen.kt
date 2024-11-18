@@ -198,6 +198,33 @@ private fun RenderMainScreen(
                     text = resources.getString(R.string.play_online_game), color = Color.White
                 )
             }
+            Button(
+                modifier = Modifier.align(Alignment.CenterHorizontally),
+                onClick = {
+                    CoroutineScope(Dispatchers.IO).launch {
+                        if (checkJwtToken().getOrNull() == true) {
+                            withContext(Dispatchers.Main) {
+                                navController?.navigateSingleTopTo(Navigation.OnlineLeaderboard)
+                            }
+                        } else {
+                            withContext(Dispatchers.Main) {
+                                navController?.navigateSingleTopTo(
+                                    Navigation.SignIn(
+                                        Navigation.OnlineLeaderboard
+                                    )
+                                )
+                            }
+                        }
+                    }
+                },
+                shape = RoundedCornerShape(5.dp),
+                colors = ButtonColors(Color.Black, Color.Black, Color.Gray, Color.Gray)
+            ) {
+                Text(
+                    text = resources.getString(R.string.leaderboard),
+                    color = Color.White
+                )
+            }
         }
         ViewAccountElement(
             viewAccountDataLoadingOverlay = viewAccountDataLoadingOverlay,

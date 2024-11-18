@@ -1,5 +1,7 @@
 *.iml
+.idea
 .gradle
+.kotlin
 /local.properties
 .DS_Store
 /build
@@ -8,4 +10,3 @@
 .cxx
 local.properties
 /app/release
-/.idea/

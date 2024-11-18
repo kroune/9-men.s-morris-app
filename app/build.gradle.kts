@@ -1,7 +1,7 @@
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
-    id("io.gitlab.arturbosch.detekt") version "1.23.3"
+    id("io.gitlab.arturbosch.detekt") version "1.23.6"
     id("org.jetbrains.kotlin.plugin.compose") version "2.0.0"
     kotlin("plugin.serialization") version "2.0.0"
     id("kotlin-kapt")

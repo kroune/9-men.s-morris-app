@@ -34,28 +34,33 @@ interface AccountInfoRepositoryI {
     /**
      * @return account rating by it's id
      */
-    suspend fun getAccountRatingById(id: Long): Result<Long?>
+    suspend fun getAccountRatingById(id: Long, jwtToken: String): Result<Long?>
 
     /**
      * @return account login (name) by it's id
      */
-    suspend fun getAccountDateById(id: Long): Result<Triple<Int, Int, Int>?>
+    suspend fun getAccountDateById(id: Long, jwtToken: String): Result<Triple<Int, Int, Int>?>
 
     /**
      * @return account login (name) by it's id
      */
-    suspend fun getAccountNameById(id: Long): Result<String?>
+    suspend fun getAccountNameById(id: Long, jwtToken: String): Result<String?>
 
     /**
      * @return account picture by it's id
      */
-    suspend fun getAccountPictureById(id: Long): Result<ByteArray>
+    suspend fun getAccountPictureById(id: Long, jwtToken: String): Result<ByteArray>
 
     /**
      * @return account id by it's jwtToken
      * it is null if this account isn't valid
      */
     suspend fun getIdByJwtToken(jwtToken: String): Result<Long>
+
+    /**
+     * @return top 10 users in the leaderboard in descending order (or less if there is < 10 players at all)
+     */
+    suspend fun getLeaderBoard(): Result<List<Long>>
 
     /**
      * logs out of the account

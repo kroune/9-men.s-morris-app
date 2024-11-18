@@ -18,6 +18,7 @@ import kotlinx.coroutines.launch
 class ViewAccountViewModel @AssistedInject constructor(
     private val accountInfoRepositoryI: AccountInfoRepositoryI,
     private val authRepositoryI: AccountInfoRepositoryI,
+    private val accountInfoRepository: AccountInfoRepositoryI,
     /**
      * account id
      */
@@ -82,7 +83,10 @@ class ViewAccountViewModel @AssistedInject constructor(
         }
         CoroutineScope(networkScope).launch {
             val requestResult =
-                accountInfoRepositoryI.getAccountRatingById(id).getOrNull() ?: return@launch
+                accountInfoRepositoryI.getAccountRatingById(
+                    id,
+                    accountInfoRepository.jwtTokenState.value!!
+                ).getOrNull() ?: return@launch
             accountRating.value = requestResult
         }
     }
@@ -96,7 +100,10 @@ class ViewAccountViewModel @AssistedInject constructor(
         }
         CoroutineScope(networkScope).launch {
             val requestResult =
-                accountInfoRepositoryI.getAccountDateById(id).getOrNull() ?: return@launch
+                accountInfoRepositoryI.getAccountDateById(
+                    id,
+                    accountInfoRepository.jwtTokenState.value!!
+                ).getOrNull() ?: return@launch
             val finalString =
                 "${requestResult.first}-${requestResult.second}-${requestResult.third}"
             accountCreationDate.value = finalString
@@ -112,7 +119,10 @@ class ViewAccountViewModel @AssistedInject constructor(
         }
         CoroutineScope(networkScope).launch {
             val buffer =
-                accountInfoRepositoryI.getAccountPictureById(id).getOrNull() ?: return@launch
+                accountInfoRepositoryI.getAccountPictureById(
+                    id,
+                    accountInfoRepository.jwtTokenState.value!!
+                ).getOrNull() ?: return@launch
             pictureByteArray.value = buffer
         }
     }
@@ -125,7 +135,10 @@ class ViewAccountViewModel @AssistedInject constructor(
             return
         }
         CoroutineScope(networkScope).launch {
-            val name = accountInfoRepositoryI.getAccountNameById(id).getOrNull() ?: return@launch
+            val name = accountInfoRepositoryI.getAccountNameById(
+                id,
+                accountInfoRepository.jwtTokenState.value!!
+            ).getOrNull() ?: return@launch
             accountName.value = name
         }
     }

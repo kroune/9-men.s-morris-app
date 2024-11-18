@@ -16,6 +16,7 @@ import androidx.navigation.toRoute
 import com.kroune.nineMensMorrisApp.data.remote.AuthResults
 import com.kroune.nineMensMorrisApp.di.factoryProvider
 import com.kroune.nineMensMorrisApp.ui.impl.AppStartAnimationScreen
+import com.kroune.nineMensMorrisApp.ui.impl.RenderLeaderboardScreen
 import com.kroune.nineMensMorrisApp.ui.impl.RenderWelcomeScreen
 import com.kroune.nineMensMorrisApp.ui.impl.auth.RenderSignInScreen
 import com.kroune.nineMensMorrisApp.ui.impl.auth.RenderSignUpScreen
@@ -25,6 +26,7 @@ import com.kroune.nineMensMorrisApp.ui.impl.game.RenderGameWithBotScreen
 import com.kroune.nineMensMorrisApp.ui.impl.game.RenderGameWithFriendScreen
 import com.kroune.nineMensMorrisApp.ui.impl.game.RenderOnlineGameScreen
 import com.kroune.nineMensMorrisApp.ui.impl.game.SearchingForGameScreen
+import com.kroune.nineMensMorrisApp.viewModel.impl.LeaderboardViewModel
 import com.kroune.nineMensMorrisApp.viewModel.impl.WelcomeViewModel
 import com.kroune.nineMensMorrisApp.viewModel.impl.auth.SignInViewModel
 import com.kroune.nineMensMorrisApp.viewModel.impl.auth.SignUpViewModel
@@ -205,6 +207,10 @@ fun NavHost(context: Context) {
                 authResult = vm.authResult.value
             )
         }
+        composable<Navigation.OnlineLeaderboard> {
+            val vm: LeaderboardViewModel = hiltViewModel()
+            RenderLeaderboardScreen(vm.players, resources = context.resources)
+        }
         composable<Navigation.SearchingOnlineGame> {
             val vm: SearchingForGameViewModel = hiltViewModel()
             val id = vm.gameId.value
@@ -216,7 +222,7 @@ fun NavHost(context: Context) {
                     }
                 }
             }
-            SearchingForGameScreen(expectedWaitingTime, context.resources)
+            SearchingForGameScreen(expectedWaitingTime,resources = context.resources)
         }
         composable<Navigation.OnlineGame> {
             val vm: OnlineGameViewModel = hiltViewModel()
@@ -247,7 +253,15 @@ fun NavHost(context: Context) {
                 onGiveUp = { vm.giveUp() },
                 gameEnded = vm.gameEnded.value,
                 isGreen = vm.movesFirst.value,
-                navController = navController
+                timeLeft = vm.timeLeft.value,
+                ownAccountName = vm.ownAccountName.value,
+                ownAccountRating = vm.ownAccountRating.value,
+                ownPictureByteArray = vm.ownPictureByteArray.value,
+                enemyAccountName = vm.enemyAccountName.value,
+                enemyAccountRating = vm.enemyAccountRating.value,
+                enemyPictureByteArray = vm.enemyPictureByteArray.value,
+                navController = navController,
+                resources = context.resources
             )
         }
         composable<Navigation.AppStartAnimation> {

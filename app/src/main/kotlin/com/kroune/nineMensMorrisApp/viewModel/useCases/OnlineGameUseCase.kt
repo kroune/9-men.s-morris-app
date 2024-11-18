@@ -22,20 +22,28 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.ClosedReceiveChannelException
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
+import kotlin.time.Duration.Companion.seconds
 
 /**
  * online game use case
  */
 class OnlineGameUseCase(
-    private val accountInfoRepository: AccountInfoRepositoryI
+    private val accountInfoRepository: AccountInfoRepositoryI,
+    viewModelScope: CoroutineScope
 ) {
     /**
      * our web socket session
      */
     private var session: DefaultClientWebSocketSession? = null
+
+    /**
+     * time left for move
+     */
+    val timeLeft: MutableState<Long> = mutableStateOf(30)
 
     /**
      * switches to [Dispatchers.IO] and makes sure to cancel previous job
@@ -44,6 +52,16 @@ class OnlineGameUseCase(
         gameJob?.cancel()
         gameJob = CoroutineScope(Dispatchers.IO).launch {
             exceptionHandler(gameId)
+        }
+    }
+
+    init {
+        viewModelScope.launch {
+            while (true) {
+                delay(1.seconds)
+                // we just stop updating left time, since we expect the game to end soon
+                timeLeft.value = (timeLeft.value - 1).coerceAtLeast(0)
+            }
         }
     }
 
@@ -73,7 +91,8 @@ class OnlineGameUseCase(
             session = this
             isGreen.value = get().toBooleanStrict()
             gameBoard.pos.value = Json.decodeFromString<Position>(get())
-            enemyId.value = get().toLong()
+            enemyId.emit(get().toLong())
+            println("enemyId - ${enemyId.value}")
             while (true) {
                 // receive the server's data
                 val serverMessage = Json.decodeFromString<Movement>(get())
@@ -84,6 +103,7 @@ class OnlineGameUseCase(
                     break
                 }
                 gameBoard.pos.value = serverMessage.producePosition(gameBoard.pos.value)
+                timeLeft.value = 30
                 if (gameBoard.pos.value.pieceToMove == isGreen.value) {
                     gameBoard.handleHighLighting()
                 } else {
@@ -103,7 +123,7 @@ class OnlineGameUseCase(
     /**
      * id of the enemy
      */
-    var enemyId: MutableState<Long?> = mutableStateOf(null)
+    var enemyId: MutableStateFlow<Long?> = MutableStateFlow(null)
 
     /**
      * tells if the game has ended
@@ -154,6 +174,7 @@ class OnlineGameUseCase(
                     val string = Json.encodeToString<Movement>(it)
                     // post our move
                     session!!.send(string)
+                    timeLeft.value = 30
                 }
             }
         }
