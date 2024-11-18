@@ -17,7 +17,7 @@ import javax.inject.Inject
  */
 @HiltViewModel
 class OnlineGameViewModel @Inject constructor(
-    val accountInfoRepository: AccountInfoRepositoryI
+    private val accountInfoRepository: AccountInfoRepositoryI
 ) : ViewModelI() {
     private val game = OnlineGameUseCase(accountInfoRepository, viewModelScope)
 
@@ -40,6 +40,9 @@ class OnlineGameViewModel @Inject constructor(
      */
     val movesFirst = game.isGreen
 
+    /**
+     * time left for move
+     */
     val timeLeft = game.timeLeft
 
     /**
@@ -65,19 +68,48 @@ class OnlineGameViewModel @Inject constructor(
     /**
      * game id
      */
-    var gameId: Long? = null
+    private var gameId: Long? = null
 
 
-    val ownAccountId = accountInfoRepository.accountIdState
-    val enemyAccountId = game.enemyId
-    val ownInfo = GetUserInfoUseCase(viewModelScope, accountInfoRepository)
-    val enemyInfo = GetUserInfoUseCase(viewModelScope, accountInfoRepository)
+    private val ownAccountId = accountInfoRepository.accountIdState
+    private val enemyAccountId = game.enemyId
+    private val ownInfo = GetUserInfoUseCase(viewModelScope, accountInfoRepository)
+    private val enemyInfo = GetUserInfoUseCase(viewModelScope, accountInfoRepository)
 
+    /**
+     * name of the account
+     * null while still loading
+     */
     val ownAccountName: MutableState<String?> = ownInfo.accountName
+
+    /**
+     * picture byte array
+     * null while still loading
+     */
     val ownPictureByteArray: MutableState<ByteArray?> = ownInfo.pictureByteArray
+
+    /**
+     * player rating
+     * null while still loading
+     */
     val ownAccountRating: MutableState<Long?> = ownInfo.accountRating
+
+    /**
+     * name of the account
+     * null while still loading
+     */
     val enemyAccountName: MutableState<String?> = enemyInfo.accountName
+
+    /**
+     * picture byte array
+     * null while still loading
+     */
     val enemyPictureByteArray: MutableState<ByteArray?> = enemyInfo.pictureByteArray
+
+    /**
+     * player rating
+     * null while still loading
+     */
     val enemyAccountRating: MutableState<Long?> = enemyInfo.accountRating
 
     init {

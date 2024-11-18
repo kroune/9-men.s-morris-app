@@ -40,6 +40,9 @@ class OnlineGameUseCase(
      */
     private var session: DefaultClientWebSocketSession? = null
 
+    /**
+     * time left for move
+     */
     val timeLeft: MutableState<Long> = mutableStateOf(30)
 
     /**

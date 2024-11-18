@@ -40,16 +40,14 @@ class AccountInfoRepositoryImpl : AccountInfoRepositoryI {
         }
     }
 
-    override suspend fun getAccountRatingById(id: Long, jwtToken: String?): Result<Long?> {
+    override suspend fun getAccountRatingById(id: Long, jwtToken: String): Result<Long?> {
         var response: Long? = null
         return runCatching {
             val request = network.get("http${SERVER_ADDRESS}${USER_API}/get-rating-by-id") {
                 method = HttpMethod.Get
                 url {
                     parameters["id"] = id.toString()
-                    jwtToken?.let {
-                        parameters["jwtToken"] = it
-                    }
+                    parameters["jwtToken"] = jwtToken
                 }
             }.bodyAsText()
             response = Json.decodeFromString<Long?>(request)
@@ -62,7 +60,7 @@ class AccountInfoRepositoryImpl : AccountInfoRepositoryI {
 
     override suspend fun getAccountDateById(
         id: Long,
-        jwtToken: String?
+        jwtToken: String
     ): Result<Triple<Int, Int, Int>?> {
         var response: Triple<Int, Int, Int>? = null
         return runCatching {
@@ -70,9 +68,7 @@ class AccountInfoRepositoryImpl : AccountInfoRepositoryI {
                 method = HttpMethod.Get
                 url {
                     parameters["id"] = id.toString()
-                    jwtToken?.let {
-                        parameters["jwtToken"] = it
-                    }
+                    parameters["jwtToken"] = jwtToken
                 }
             }.bodyAsText()
             response = Json.decodeFromString<Triple<Int, Int, Int>?>(request)
@@ -83,16 +79,14 @@ class AccountInfoRepositoryImpl : AccountInfoRepositoryI {
         }
     }
 
-    override suspend fun getAccountNameById(id: Long, jwtToken: String?): Result<String?> {
+    override suspend fun getAccountNameById(id: Long, jwtToken: String): Result<String?> {
         var response: String? = null
         return runCatching {
             val request = network.get("http${SERVER_ADDRESS}${USER_API}/get-login-by-id") {
                 method = HttpMethod.Get
                 url {
                     parameters["id"] = id.toString()
-                    jwtToken?.let {
-                        parameters["jwtToken"] = it
-                    }
+                    parameters["jwtToken"] = jwtToken
                 }
             }.bodyAsText()
             response = Json.decodeFromString<String?>(request)
@@ -113,7 +107,7 @@ class AccountInfoRepositoryImpl : AccountInfoRepositoryI {
                 }
             }.bodyAsText()
             response = Json.decodeFromString<Long>(request)
-            response
+            response!!
         }.onFailure {
             println("error getting account id $jwtToken; response - $response")
             it.printStackTrace()
@@ -128,7 +122,7 @@ class AccountInfoRepositoryImpl : AccountInfoRepositoryI {
                     method = HttpMethod.Get
                 }
             response = httpResponse.bodyAsText()
-            Json.decodeFromString<List<Long>>(response)
+            Json.decodeFromString<List<Long>>(response!!)
         }.onFailure {
             println("error getting leaderboard, response - $response")
             it.printStackTrace()
@@ -141,7 +135,7 @@ class AccountInfoRepositoryImpl : AccountInfoRepositoryI {
         Log.d("ACCOUNT", "Logged out")
     }
 
-    override suspend fun getAccountPictureById(id: Long, jwtToken: String?): Result<ByteArray> {
+    override suspend fun getAccountPictureById(id: Long, jwtToken: String): Result<ByteArray> {
         var response: String? = null
         return runCatching {
             val httpResponse: HttpResponse =
@@ -149,13 +143,11 @@ class AccountInfoRepositoryImpl : AccountInfoRepositoryI {
                     method = HttpMethod.Get
                     url {
                         parameters["id"] = id.toString()
-                        jwtToken?.let {
-                            parameters["jwtToken"] = it
-                        }
+                        parameters["jwtToken"] = jwtToken
                     }
                 }
             response = httpResponse.bodyAsText()
-            Json.decodeFromString<ByteArray>(response)
+            Json.decodeFromString<ByteArray>(response!!)
         }.onFailure {
             println("error getting account picture id - $id, response - $response")
             it.printStackTrace()

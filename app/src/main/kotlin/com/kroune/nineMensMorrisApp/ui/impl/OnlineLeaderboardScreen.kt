@@ -37,19 +37,13 @@ import androidx.compose.ui.unit.dp
 import com.kroune.nineMensMorrisApp.R
 import com.kroune.nineMensMorrisApp.common.LoadingCircle
 
+/**
+ * Renders leaderboard screen
+ */
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun RenderLeaderboardScreen(
     players: SnapshotStateList<Player>?,
-    resources: Resources
-) {
-    OnlineLeaderboard(players = players, resources = resources)
-}
-
-@OptIn(ExperimentalFoundationApi::class)
-@Composable
-fun OnlineLeaderboard(
-    players: SnapshotStateList<Player>?,
-    modifier: Modifier = Modifier,
     resources: Resources
 ) {
     Text(
@@ -57,9 +51,8 @@ fun OnlineLeaderboard(
         style = MaterialTheme.typography.headlineSmall.copy(color = Color.White),
         modifier = Modifier.padding(bottom = 16.dp),
     )
-
     LazyColumn(
-        modifier = modifier
+        modifier = Modifier
             .fillMaxWidth()
             .background(Color.Gray)
             .padding(16.dp, 16.dp, 16.dp, 0.dp)
@@ -81,7 +74,9 @@ fun OnlineLeaderboard(
     }
 }
 
-
+/**
+ * Draws a single item in the leaderboard column
+ */
 @Composable
 fun LeaderboardItem(player: Player, resources: Resources) {
     Card(
@@ -90,21 +85,17 @@ fun LeaderboardItem(player: Player, resources: Resources) {
             .padding(vertical = 8.dp)
             .border(2.dp, Color(0xFF616161), RoundedCornerShape(8.dp)),
         elevation = CardDefaults.cardElevation(4.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.LightGray),
-
-        ) {
+        colors = CardDefaults.cardColors(containerColor = Color.LightGray)
+    ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.padding(16.dp)
         ) {
-
             if (player.pictureByteArray.value != null) {
-
                 val imageBitmap = BitmapFactory.decodeByteArray(
                     player.pictureByteArray.value, 0,
                     player.pictureByteArray.value!!.size
                 ).asImageBitmap()
-
                 Image(
                     bitmap = imageBitmap,
                     contentScale = ContentScale.Crop,
@@ -116,7 +107,6 @@ fun LeaderboardItem(player: Player, resources: Resources) {
             } else {
                 LoadingCircle()
             }
-
             Spacer(modifier = Modifier.width(16.dp))
             Column(verticalArrangement = Arrangement.Center) {
                 Text(
@@ -135,9 +125,23 @@ fun LeaderboardItem(player: Player, resources: Resources) {
     }
 }
 
-// Data class for player information (тут везде оставляем State)
+/**
+ * holds info about player
+ */
 data class Player(
+    /**
+     * name of the player
+     * null = info is loading
+     */
     val accountName: State<String?>,
+    /**
+     * picture of the player
+     * null = info is loading
+     */
     val pictureByteArray: State<ByteArray?>,
+    /**
+     * rating of the player
+     * null = info is loading
+     */
     val accountRating: State<Long?>
 )

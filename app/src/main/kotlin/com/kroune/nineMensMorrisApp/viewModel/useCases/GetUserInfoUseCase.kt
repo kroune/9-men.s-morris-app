@@ -6,38 +6,56 @@ import com.kroune.nineMensMorrisApp.data.remote.account.AccountInfoRepositoryI
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
+/**
+ * gets all info about player
+ */
 class GetUserInfoUseCase(
-    val scope: CoroutineScope,
-    val accountInfoRepository: AccountInfoRepositoryI
+    private val scope: CoroutineScope,
+    private val accountInfoRepository: AccountInfoRepositoryI
 ) {
-
+    /**
+     * name of the account
+     * null while still loading
+     */
     val accountName: MutableState<String?> = mutableStateOf(null)
+
+    /**
+     * picture byte array
+     * null while still loading
+     */
     val pictureByteArray: MutableState<ByteArray?> = mutableStateOf(null)
+
+    /**
+     * player rating
+     * null while still loading
+     */
     val accountRating: MutableState<Long?> = mutableStateOf(null)
 
-    fun getInfo(id: Long, isInLeaderBoard: Boolean = false) {
+    /**
+     * gets info for user
+     * @param id = id of the user
+     */
+    fun getInfo(id: Long) {
         scope.launch {
-            scope.launch {
-                accountName.value =
-                    accountInfoRepository.getAccountNameById(
-                        id,
-                        if (!isInLeaderBoard) accountInfoRepository.jwtTokenState.value!! else null
-                    ).getOrThrow()
-            }
-            scope.launch {
-                pictureByteArray.value =
-                    accountInfoRepository.getAccountPictureById(
-                        id,
-                        if (!isInLeaderBoard) accountInfoRepository.jwtTokenState.value!! else null
-                    ).getOrThrow()
-            }
-            scope.launch {
-                accountRating.value =
-                    accountInfoRepository.getAccountRatingById(
-                        id,
-                        if (!isInLeaderBoard) accountInfoRepository.jwtTokenState.value!! else null
-                    ).getOrThrow()
-            }
+            accountName.value =
+                accountInfoRepository.getAccountNameById(
+                    id,
+                    accountInfoRepository.jwtTokenState.value!!
+                ).getOrThrow()
+        }
+        scope.launch {
+            pictureByteArray.value =
+                accountInfoRepository.getAccountPictureById(
+                    id,
+                    accountInfoRepository.jwtTokenState.value!!
+                ).getOrThrow()
+        }
+        scope.launch {
+            accountRating.value =
+                accountInfoRepository.getAccountRatingById(
+                    id,
+                    accountInfoRepository.jwtTokenState.value!!
+                ).getOrThrow()
         }
     }
 }

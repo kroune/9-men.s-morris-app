@@ -168,6 +168,9 @@ private fun GiveUpConfirm(
     }
 }
 
+/**
+ * Timer that shows how much time is left for move
+ */
 @Composable
 fun TurnTimerUI(timeLeft: Long, resources: Resources) {
     Box(
@@ -177,7 +180,7 @@ fun TurnTimerUI(timeLeft: Long, resources: Resources) {
             .padding(8.dp)
     ) {
         Text(
-            text = timeLeft.toString(),
+            text = "$timeLeft ${resources.getString(R.string.time_left)}",
             fontSize = 24.sp,
             fontWeight = FontWeight.Bold,
             color = Color.DarkGray
@@ -185,6 +188,9 @@ fun TurnTimerUI(timeLeft: Long, resources: Resources) {
     }
 }
 
+/**
+ * draws card with info about player
+ */
 @Composable
 fun PlayerCard(
     playerName: String?,
@@ -226,7 +232,6 @@ fun PlayerCard(
         ) {
             Text(text = playerName ?: "loading info...", fontSize = 16.sp)
             Spacer(modifier = Modifier.height(4.dp))
-
             Box(
                 modifier = Modifier
                     .size(
@@ -256,14 +261,16 @@ fun PlayerCard(
 
             Spacer(modifier = Modifier.height(4.dp))
             Text(
-                text = "${resources.getString(R.string.rating)}: " +
-                        "${rating ?: resources.getString(R.string.loading)}",
+                text = "${resources.getString(R.string.rating)}: ${rating ?: resources.getString(R.string.loading)}",
                 fontSize = 14.sp, color = Color.Gray
             )
         }
     }
 }
 
+/**
+ * draws player ui
+ */
 @Composable
 fun PlayersUI(
     pos: Position,
@@ -292,7 +299,7 @@ fun PlayersUI(
             PlayerCard(
                 playerName = ownAccountName,
                 pictureByteArray = ownPictureByteArray,
-                isGreen = isGreen == true,
+                isGreen = (isGreen == true),
                 rating = ownAccountRating,
                 pos = pos,
                 resources = resources,
@@ -305,7 +312,7 @@ fun PlayersUI(
             PlayerCard(
                 playerName = enemyAccountName,
                 pictureByteArray = enemyPictureByteArray,
-                isGreen = isGreen == false,
+                isGreen = (isGreen == false),
                 rating = enemyAccountRating,
                 pos = pos,
                 resources = resources,
