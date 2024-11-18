@@ -172,7 +172,6 @@ private fun GiveUpConfirm(
 fun TurnTimerUI(timeLeft: Long, resources: Resources) {
     Box(
         modifier = Modifier
-//            .fillMaxWidth(0.5f)
             .padding(16.dp)
             .border(2.dp, Color.Gray, shape = RoundedCornerShape(8.dp))
             .padding(8.dp)
@@ -256,9 +255,11 @@ fun PlayerCard(
             }
 
             Spacer(modifier = Modifier.height(4.dp))
-            Text(text = "${resources.getString(R.string.rating)}: " +
+            Text(
+                text = "${resources.getString(R.string.rating)}: " +
                         "${rating ?: resources.getString(R.string.loading)}",
-                fontSize = 14.sp, color = Color.Gray)
+                fontSize = 14.sp, color = Color.Gray
+            )
         }
     }
 }
@@ -295,7 +296,9 @@ fun PlayersUI(
                 rating = ownAccountRating,
                 pos = pos,
                 resources = resources,
-                modifier = Modifier.weight(1f).height(120.dp)
+                modifier = Modifier
+                    .weight(1f)
+                    .height(120.dp)
             )
 
             Spacer(modifier = Modifier.width(16.dp))
@@ -306,7 +309,9 @@ fun PlayersUI(
                 rating = enemyAccountRating,
                 pos = pos,
                 resources = resources,
-                modifier = Modifier.weight(1f).height(120.dp)
+                modifier = Modifier
+                    .weight(1f)
+                    .height(120.dp)
             )
         }
         Spacer(modifier = Modifier.height(16.dp))
@@ -316,7 +321,11 @@ fun PlayersUI(
                 onClick = { onToggleDragging() },
                 modifier = Modifier.padding(12.dp)
             ) {
-                Text(if (dragDesk) resources.getString(R.string.deactivate_move) else resources.getString(R.string.activate_move))
+                Text(
+                    if (dragDesk) resources.getString(R.string.deactivate_move) else resources.getString(
+                        R.string.activate_move
+                    )
+                )
             }
         }
 

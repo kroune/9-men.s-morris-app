@@ -13,8 +13,8 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 /**
- * welcome model
- * called when app is launched
+ * view model
+ *  @see [OnlineLeaderBoardScreen]
  */
 @HiltViewModel
 class LeaderboardViewModel @Inject constructor(
@@ -29,17 +29,15 @@ class LeaderboardViewModel @Inject constructor(
             if (leaderboardData == null) {
                 players.clear()
                 return@launch
-            }
-            else {
+            } else {
                 leaderboardData.forEach { id ->
                     launch {
                         val userInfoUseCase = GetUserInfoUseCase(this, accountInfoRepository)
                         userInfoUseCase.getInfo(id, false)
                         val player = Player(
-                            accountName = userInfoUseCase.accountName /* ?: "Unknown"*/,
-                            pictureByteArray = userInfoUseCase.pictureByteArray
-                                /*?: ByteArray(0)*/,
-                            accountRating = userInfoUseCase.accountRating// ?: 0L
+                            accountName = userInfoUseCase.accountName,
+                            pictureByteArray = userInfoUseCase.pictureByteArray,
+                            accountRating = userInfoUseCase.accountRating
                         )
                         players.add(player)
                     }

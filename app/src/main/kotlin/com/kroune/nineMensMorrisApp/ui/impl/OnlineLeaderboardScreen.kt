@@ -1,10 +1,21 @@
 package com.kroune.nineMensMorrisApp.ui.impl
 
+import android.content.res.Resources
 import android.graphics.BitmapFactory
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -25,44 +36,51 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.kroune.nineMensMorrisApp.R
 import com.kroune.nineMensMorrisApp.common.LoadingCircle
-import android.content.res.Resources
 
 @Composable
 fun RenderLeaderboardScreen(
     players: SnapshotStateList<Player>?,
     resources: Resources
 ) {
-
     OnlineLeaderboard(players = players, resources = resources)
-
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun OnlineLeaderboard(
     players: SnapshotStateList<Player>?,
     modifier: Modifier = Modifier,
     resources: Resources
 ) {
-    Column(
+    Text(
+        text = resources.getString(R.string.play_game_with_friends),
+        style = MaterialTheme.typography.headlineSmall.copy(color = Color.White),
+        modifier = Modifier.padding(bottom = 16.dp),
+    )
+
+    LazyColumn(
         modifier = modifier
             .fillMaxWidth()
-//            .fillMaxHeight()
             .background(Color.Gray)
             .padding(16.dp, 16.dp, 16.dp, 0.dp)
     ) {
-        Text(
-            text = resources.getString(R.string.play_game_with_friends),
-            style = MaterialTheme.typography.headlineSmall.copy(color = Color.White),
-            modifier = Modifier.padding(bottom = 16.dp),
-//            color = Color.White
-        )
-        LazyColumn (/*modifier = modifier.fillMaxHeight()*/) {
-            items(players ?: listOf()) { player ->
-                LeaderboardItem(player = player, resources = resources)
-            }
+        stickyHeader {
+            Text(
+                text = resources.getString(R.string.leaderboard),
+                style = MaterialTheme.typography.titleMedium.copy(color = Color.White),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(Color.DarkGray)
+                    .padding(8.dp)
+            )
+        }
+
+        items(players ?: listOf()) { player ->
+            LeaderboardItem(player = player, resources = resources)
         }
     }
 }
+
 
 @Composable
 fun LeaderboardItem(player: Player, resources: Resources) {
@@ -71,19 +89,20 @@ fun LeaderboardItem(player: Player, resources: Resources) {
             .fillMaxSize()
             .padding(vertical = 8.dp)
             .border(2.dp, Color(0xFF616161), RoundedCornerShape(8.dp)),
-           elevation = CardDefaults.cardElevation(4.dp),
+        elevation = CardDefaults.cardElevation(4.dp),
         colors = CardDefaults.cardColors(containerColor = Color.LightGray),
 
-    ) {
+        ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.padding(16.dp)/*.background(Color.LightGray)*/
+            modifier = Modifier.padding(16.dp)
         ) {
 
             if (player.pictureByteArray.value != null) {
 
-                val imageBitmap = BitmapFactory.decodeByteArray(player.pictureByteArray.value, 0,
-                    player.pictureByteArray.value?.size!!
+                val imageBitmap = BitmapFactory.decodeByteArray(
+                    player.pictureByteArray.value, 0,
+                    player.pictureByteArray.value!!.size
                 ).asImageBitmap()
 
                 Image(
@@ -93,7 +112,8 @@ fun LeaderboardItem(player: Player, resources: Resources) {
                     modifier = Modifier
                         .size(50.dp)
                         .clip(RoundedCornerShape(1.dp))
-                )} else {
+                )
+            } else {
                 LoadingCircle()
             }
 
