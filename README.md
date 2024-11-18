@@ -1,11 +1,13 @@
+# This project is archived, development is continued under https://github.com/kroune/nine-mens-morris-app-kmp
+
 # Nine mens Morris
 ##### it is a strategy board game for two players dating at least to the Roman Empire 
 ### This project provides an Android game
 - play with friend
 - play with bot
 - play online games
-
-This project follows MVVM (Model - View - ViewModel) model
+- view leaderboard
+- view other player's profiles
 
 ## Libraries used in project
 - ktor
